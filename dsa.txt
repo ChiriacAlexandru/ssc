@@ -1,4 +1,4 @@
-✅ Tutorial: Semnătură digitală DSA într-un proiect nou în Visual Studio
+ Tutorial: Semnătură digitală DSA într-un proiect nou în Visual Studio
 🛠️ Pas 1: Creează un nou proiect Console
 Deschide Visual Studio
 
@@ -17,9 +17,6 @@ Denumește fișierul: ConversionHandler.cs
 
 Înlocuiește tot conținutul fișierului cu:
 
-csharp
-Copy
-Edit
 using System;
 using System.Text;
 
@@ -51,9 +48,6 @@ Deschide fișierul Program.cs
 
 Înlocuiește tot conținutul cu următorul cod:
 
-csharp
-Copy
-Edit
 using System;
 using System.Security.Cryptography;
 

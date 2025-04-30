@@ -21,9 +21,7 @@ Apasă Add
 
 Înlocuiește tot conținutul acelui fișier cu:
 
-csharp
-Copy
-Edit
+
 using System;
 using System.Text;
 
@@ -55,9 +53,7 @@ public static class ConversionHandler
 
 Șterge tot ce e acolo și înlocuiește cu:
 
-csharp
-Copy
-Edit
+
 using System;
 using System.Security.Cryptography;
 
