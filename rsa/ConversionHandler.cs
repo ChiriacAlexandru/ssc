@@ -3,16 +3,19 @@ using System.Text;
 
 public static class ConversionHandler
 {
+    // Metoda pentru a transforma un string în array de octeți (byte array)
     public static byte[] StringToByteArray(string input)
     {
         return Encoding.UTF8.GetBytes(input);
     }
 
+    // Metoda pentru a transforma un array de octeți într-un șir hexadecimal
     public static string ByteArrayToHexString(byte[] bytes)
     {
         return BitConverter.ToString(bytes).Replace("-", "");
     }
 
+    // Metoda pentru a transforma un șir hexadecimal într-un array de octeți
     public static byte[] HexStringToByteArray(string hex)
     {
         int numberChars = hex.Length;
