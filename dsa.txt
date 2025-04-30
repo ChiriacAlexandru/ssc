@@ -1,0 +1,105 @@
+✅ Tutorial: Semnătură digitală DSA într-un proiect nou în Visual Studio
+🛠️ Pas 1: Creează un nou proiect Console
+Deschide Visual Studio
+
+Mergi la File > New > Project
+
+Alege Console App (.NET)
+
+Denumește proiectul (ex: DigitalSignatureDSA)
+
+Apasă Next, apoi Create
+
+📁 Pas 2: Creează fișierul ConversionHandler.cs
+În Solution Explorer, click dreapta pe proiect > Add > Class...
+
+Denumește fișierul: ConversionHandler.cs
+
+Înlocuiește tot conținutul fișierului cu:
+
+csharp
+Copy
+Edit
+using System;
+using System.Text;
+
+public static class ConversionHandler
+{
+    public static byte[] StringToByteArray(string input)
+    {
+        return Encoding.UTF8.GetBytes(input);
+    }
+
+    public static string ByteArrayToHexString(byte[] bytes)
+    {
+        return BitConverter.ToString(bytes).Replace("-", "");
+    }
+
+    public static byte[] HexStringToByteArray(string hex)
+    {
+        int numberChars = hex.Length;
+        byte[] bytes = new byte[numberChars / 2];
+        for (int i = 0; i < numberChars; i += 2)
+        {
+            bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+        }
+        return bytes;
+    }
+}
+💻 Pas 3: Scrie codul principal în Program.cs
+Deschide fișierul Program.cs
+
+Înlocuiește tot conținutul cu următorul cod:
+
+csharp
+Copy
+Edit
+using System;
+using System.Security.Cryptography;
+
+class Program
+{
+    static void Main()
+    {
+        // 1. Citește dimensiunea cheii
+        Console.Write("Key size (512 to 1024; 64-bit steps): ");
+        int keySize = int.Parse(Console.ReadLine() ?? "1024");
+
+        // 2. Creează un DSA provider
+        DSACryptoServiceProvider dsaProvider = new(keySize);
+
+        // 3. Afișează cheia, inclusiv datele private
+        string keyData = dsaProvider.ToXmlString(true);
+        Console.WriteLine("Key data (cu cheia privată):");
+        Console.WriteLine(keyData);
+
+        // 4. Citește mesajul care va fi semnat
+        Console.Write("Message to be signed: ");
+        string plaintext = Console.ReadLine() ?? string.Empty;
+
+        // 5. Semnează mesajul
+        byte[] signature = dsaProvider.SignData(ConversionHandler.StringToByteArray(plaintext));
+        string signatureHex = ConversionHandler.ByteArrayToHexString(signature);
+        Console.WriteLine($"Signature (hex): {signatureHex}");
+
+        // 6. Verifică semnătura
+        Console.Write("Message to verify: ");
+        string messageToCheck = Console.ReadLine() ?? string.Empty;
+        bool verified = dsaProvider.VerifyData(ConversionHandler.StringToByteArray(messageToCheck), signature);
+        Console.WriteLine($"Signature is valid: {verified}");
+    }
+}
+▶️ Pas 4: Rulează programul
+Apasă Ctrl + F5 pentru a rula aplicația fără debugging
+
+✅ Rezultatul:
+Introduci dimensiunea cheii DSA (ex: 1024)
+
+Vezi cheia XML (inclusiv cheia privată)
+
+Introduci un mesaj → programul îl semnează
+
+Vezi semnătura în format hex
+
+Introduci mesajul pentru verificare → primești true sau false în funcție de validitate
+

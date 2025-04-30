@@ -1,0 +1,104 @@
+🔧 Cum creezi programul în Visual Studio (Windows)
+✅ Pasul 1: Creează un nou proiect
+Deschide Visual Studio
+
+Click pe Create a new project
+
+Alege Console App (.NET Core) sau Console App (.NET)
+
+Click Next
+
+La „Project name” scrie: RSASignatureDemo
+
+Click Create
+
+📁 Pasul 2: Adaugă fișierul ConversionHandler.cs
+În Solution Explorer (dreapta), click dreapta pe proiect → Add → Class
+
+Numește fișierul: ConversionHandler.cs
+
+Apasă Add
+
+Înlocuiește tot conținutul acelui fișier cu:
+
+csharp
+Copy
+Edit
+using System;
+using System.Text;
+
+public static class ConversionHandler
+{
+    public static byte[] StringToByteArray(string input)
+    {
+        return Encoding.UTF8.GetBytes(input);
+    }
+
+    public static string ByteArrayToHexString(byte[] bytes)
+    {
+        return BitConverter.ToString(bytes).Replace("-", "");
+    }
+
+    public static byte[] HexStringToByteArray(string hex)
+    {
+        int numberChars = hex.Length;
+        byte[] bytes = new byte[numberChars / 2];
+        for (int i = 0; i < numberChars; i += 2)
+        {
+            bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
+        }
+        return bytes;
+    }
+}
+📝 Pasul 3: Înlocuiește Program.cs cu codul principal
+În Solution Explorer, dublu click pe Program.cs
+
+Șterge tot ce e acolo și înlocuiește cu:
+
+csharp
+Copy
+Edit
+using System;
+using System.Security.Cryptography;
+
+class Program
+{
+    static void Main()
+    {
+        // 1. Citește dimensiunea cheii RSA
+        Console.Write("Key size (384 to 16384; 8-bit steps): ");
+        int keySize = int.Parse(Console.ReadLine() ?? "1024");
+
+        // 2. Creează un RSA provider
+        RSACryptoServiceProvider rsaProvider = new(keySize);
+
+        // 3. Afișează cheia cu tot cu membrii privați
+        string keyData = rsaProvider.ToXmlString(true);
+        Console.WriteLine("RSA Key Data (cu cheia privată):");
+        Console.WriteLine(keyData);
+
+        // 4. Citește mesajul pentru semnare
+        Console.Write("Message to be signed: ");
+        string plaintext = Console.ReadLine() ?? string.Empty;
+
+        // 5. Creează semnătura cu SHA256
+        SHA256Managed sha256 = new();
+        byte[] signature = rsaProvider.SignData(ConversionHandler.StringToByteArray(plaintext), sha256);
+        string signatureHex = ConversionHandler.ByteArrayToHexString(signature);
+        Console.WriteLine($"Signature (hex): {signatureHex}");
+
+        // 6. Verifică semnătura
+        Console.Write("Message to verify: ");
+        string message = Console.ReadLine() ?? string.Empty;
+        bool verified = rsaProvider.VerifyData(ConversionHandler.StringToByteArray(message), sha256, signature);
+        Console.WriteLine($"Signature is valid: {verified}");
+    }
+}
+▶️ Pasul 4: Rulează aplicația
+Apasă Ctrl + F5 (Run without debugging)
+
+Introdu dimensiunea cheii (ex: 1024)
+
+Scrie mesajul de semnat
+
+Apoi scrie mesajul pentru verificare
